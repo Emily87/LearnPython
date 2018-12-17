@@ -1,2 +1,2 @@
-# LearnPy
+# LearnPython
 study hard
