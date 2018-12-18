@@ -41,7 +41,6 @@ def add_cookie(cookielist):
     return jar
 
 cookies = [
-
 ]
 url=''
 headers={}
