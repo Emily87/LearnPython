@@ -1,0 +1,33 @@
+import json, arrow
+from datetime import datetime
+from kombu import Connection
+from utils.mysqltools import ConnMysql
+
+
+def push_paymentData():
+    message={}
+    
+   
+                
+   # 数据可以从数据库中得到
+
+
+            
+    with Connection('xxx') as conn:
+        with conn.channel() as channel:
+            producer = channel.Producer()
+            while True:
+                try:
+                    producer.publish(
+                        body=message,
+                        content_type='application/json',
+                        retry=True,
+                        exchange='xxx',
+                        routing_key='xxx'
+                    )
+                except IndexError:
+                    break
+
+
+if __name__=='__main__':
+    push_paymentData()
