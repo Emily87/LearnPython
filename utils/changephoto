@@ -1,0 +1,24 @@
+from PIL import Image
+import os
+
+print(os.getcwd())
+os.chdir("")
+print(os.getcwd())
+def resize(filename):
+    img=Image.open(filename)
+    out=img.resize((340,340),Image.ANTIALIAS)
+    out.save(filename)
+list_file=os.listdir("")
+list_jpg=[]
+def getextension():
+    for i in list_file:
+        #print(i)
+        #print(os.path.splitext(i)[1])
+        if os.path.splitext(i)[1]==".png":
+            #print(i)
+            list_jpg.append(i)
+    return list_jpg
+getextension()
+#print(list_jpg)
+for i in list_jpg:
+    resize(i)
