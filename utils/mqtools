@@ -1,3 +1,5 @@
+__author__ = 'qjn'
+
 import json, arrow
 from datetime import datetime
 from kombu import Connection
