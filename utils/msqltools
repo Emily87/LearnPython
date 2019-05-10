@@ -1,0 +1,60 @@
+from utils.conftools import getSection
+from pymysql import connect, cursors
+
+
+class ConnMysql(object):
+    def __init__(self, db_name):
+        conf = getSection('db.conf', db_name)
+        if 'port' in conf:
+            conf['port'] = int(conf['port'])
+        self.conn = connect(**conf, charset='utf8')
+
+    def _exc(self, sql, args=None, is_commit=False, fetch=0, is_dictresult=False):
+        try:
+            if is_dictresult:
+                self.cursor = self.conn.cursor(cursors.DictCursor)
+            else:
+                self.cursor = self.conn.cursor()
+
+            if args == None:
+                self.cursor.execute(sql)
+            else:
+                for i in args:
+                    if isinstance(i, list) or isinstance(i, tuple):
+                        self.cursor.executemany(sql, args=args)
+                    else:
+                        self.cursor.execute(sql, args=args)
+
+            if is_commit:
+                self.conn.commit()
+            else:
+                size = int(fetch)
+                if size > 0:
+                    result = self.cursor.fetchmany(size)
+                else:
+                    result = self.cursor.fetchall()
+                return result
+
+        except Exception as e:
+            print(e)
+            self.conn.rollback()
+
+    def inquire(self, sql, args=None, fetch=0, is_dictresult=True):
+        return self._exc(sql, args, False, fetch, is_dictresult)
+
+    def noinquire(self, sql, args=None, is_commit=True):
+        return self._exc(sql, args, is_commit)
+
+    def switchdb(self, dbname):
+        self.conn.select_db(dbname)
+
+    def close(self):
+        self.cursor.close()
+        self.conn.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.close()
+
