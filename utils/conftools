@@ -1,0 +1,16 @@
+from configparser import ConfigParser
+import os, inspect
+
+
+def getSection(file, section):
+    if os.path.exists(file):
+        abs_file = file
+    else:
+        path_list = os.path.abspath(os.path.dirname(inspect.stack()[0][1])).split(os.sep)[0:-1]
+        path_list.append('conf')
+        path_list.append(file)
+        abs_file = os.sep.join(path_list)
+    conf = ConfigParser()
+    conf.read(abs_file, encoding='utf-8')
+    sec_dict = {k: v for k, v in conf.items(section) if v != ''}
+    return sec_dict
