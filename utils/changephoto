@@ -1,3 +1,5 @@
+__author__ = 'qjn'
+
 from PIL import Image
 import os
 
