@@ -1,0 +1,35 @@
+__author__ = 'qjn'
+
+from  redis import Redis,ConnectionPool
+from utils.conftools import getSection
+
+class RedisConf(object):
+    def _getConf(self,redis_name):
+        return getSection('xxx',redis_name)
+
+    # 连接redis并返回对象
+    # decode_responses: 因为Redis类继承的StrictRedis类中，构造函数中decode_responses默认值是False，返回的数据是字节码，这里优化默认设置为True
+    def conn(self,redis_name=None,decode_responses=True,pool=None):
+        if pool != None:
+            # 也支持连接池的方式连接
+            return Redis(connection_pool=pool
+                    # ,decode_responses=decode_responses
+                    # 当建立连接池的时候，就已经定义了decode_responses，这里不能覆盖设置，可以打开代码试试与连接池配置不一致时的效果
+            )
+        else:
+            return Redis(**self._getConf(redis_name),decode_responses=decode_responses)
+
+    # 创建连接池
+    def pool(self,redis_name,decode_responses=True):
+        return ConnectionPool(**self._getConf(redis_name),decode_responses=decode_responses)
+
+if __name__ == '__main__':
+    r = RedisConf().conn('xxx')
+
+    # pool = RedisConf().pool('xxx')
+    # r = RedisConf().conn(pool= pool)
+
+    r.set('xxx', 'xxx')
+    print(r.get('xxx'))
+    r.delete('xxx')
+    print(r.get('xxx'))
