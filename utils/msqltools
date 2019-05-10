@@ -1,3 +1,5 @@
+__author__ = 'qjn'
+
 from utils.conftools import getSection
 from pymysql import connect, cursors
 
